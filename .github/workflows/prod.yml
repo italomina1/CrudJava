@@ -12,29 +12,31 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Setup Java
-        uses: actions/setup-java@v3
+        uses: actions/setup-java@v2
         with:
-          distribution: 'temurin'
-          java-version: '17'
+          java-version: '17'  # Não é necessário especificar a distribuição para Temurin
 
       - name: Build project
         run: cd Back && mvn clean install -DskipTests
 
       - name: Login Docker Hub
-        run: docker login -u italojks -p 88498600Ctx
+        run: echo "${{ secrets.DOCKER_HUB_PASSWORD }}" | docker login -u italojks --password-stdin
 
       - name: Build docker image
         run: docker build -t italojks/javadb .
+
       - name: Push image docker
         run: docker push italojks/javadb
 
   deploy:
     needs: build
-    runs-on: self-hosted
+    runs-on: self-hosted  # Alterado para self-hosted para permitir a execução de comandos Docker
     steps:
-      - name: pull image
-        run: sudo docker pull italojks/javadb:latest
-      - name: Remove docker image
-        run: sudo docker rm -f javadb
-      - name: run docker container
-        run: sudo docker run -d -p 8080:8080 --name javadb italojks/javadb:latest
+      - name: Pull image
+        run: docker pull italojks/javadb:latest
+
+      - name: Remove previous container
+        run: docker rm -f javadb || true  # Remove o contêiner anterior se existir
+
+      - name: Run docker container
+        run: docker run -d -p 8080:8080 --name javadb italojks/javadb:latest
