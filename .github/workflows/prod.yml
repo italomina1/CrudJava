@@ -1,0 +1,9 @@
+name: Deploy projeto CRUD
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  build:
+    runs-on: unbuntu-latest
