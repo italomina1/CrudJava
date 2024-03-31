@@ -19,3 +19,11 @@ jobs:
 
       - name: Build project
         run: cd Back && mvn clean install -DskipTests
+
+      - name: Login Docker Hub
+        run: docker login -u italojks -p 88498600Ctx
+
+      - name: Build docker image
+        run: docker build -t italojks/javadb .
+      - name: Push image docker
+        run: docker push italojks/javadb
