@@ -7,3 +7,10 @@ on:
 jobs:
   build:
     runs-on: unbuntu-latest
+    steps:
+      -name: Checkout code
+       uses: actions/chegout@v3
+
+
+       -nome: Setup Java
+        uses: actions/setup-java@v3
